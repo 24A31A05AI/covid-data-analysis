@@ -86,10 +86,4 @@ Add a dashboard title, data source, date cutoff (30 April 2021), and filters for
 - GDP per capita and median age are country-level indicators; correlation does not establish causation.
 - `RANK()` can return more than ten rows when ranks tie.
 - The SQL script must be executed in SQL Server and compared with the included result files before claiming reproducibility.
-
-## Reproduce the analysis
-1. In SQL Server, create or select database `PortfolioProject`.
-2. Import the two Excel files as `dbo.CovidDeaths` and `dbo.CovidVaccinations`, preserving column names.
-3. Open and execute `sql/covid_personal_extensions.sql` section by section.
-4. Compare SQL outputs against the CSVs in `data/` and investigate any differences caused by import types or NULL handling.
-5. Fill in your own interpretation and add Tableau Public screenshots or a dashboard link once created.
+- 
