@@ -1,11 +1,16 @@
 # COVID-19 Data Exploration — Guided Project + Personal Extensions
 
 ## Project status
-**Prepared portfolio starter.** The SQL queries and documentation are included, and the attached Excel extracts were independently analyzed to produce the result tables in `data/` and the workbook in `excel/`. The T-SQL script still needs to be executed in your own SQL Server environment to verify that SQL Server returns matching results.
+**Guided portfolio project with personal extensions.** The project combines an initial exploration inspired by Alex Freberg's public COVID-19 SQL tutorial with additional analysis questions, Excel result tables/charts, and a Tableau Public dashboard.
+
+The supplied result tables were calculated from the provided Excel extracts. The T-SQL script still needs to be executed in SQL Server and its results compared with the included outputs before claiming that the SQL workflow has been fully reproduced and validated.
+
+## Project links
+- **GitHub repository:** https://github.com/24A31A05AI/covid-data-analysis
+- **Tableau Public dashboard:** https://public.tableau.com/views/COVID-19DataAnalysisDashboard_17929517631930/COVID-19DataAnalysisDashboard?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link
 
 ## Overview
 Explore reported COVID-19 cases, deaths, vaccination reporting, and country-level indicators using SQL Server (T-SQL), Excel, and Tableau Public.
-
 
 **Data period:** 1 January 2020 to 30 April 2021 in the supplied files.
 
@@ -18,40 +23,40 @@ Explore reported COVID-19 cases, deaths, vaccination reporting, and country-leve
 ## Tools
 - SQL Server / T-SQL
 - Microsoft Excel
-- Tableau Public (dashboard build is a suggested next step)
-- GitHub for version control and project presentation
+- Tableau Public
+- GitHub
 
 ## Data handling and approach
 - Excluded records where `continent IS NULL` from country-level comparisons because they include aggregates such as World and regional totals.
 - Used `TRY_CAST` for potentially text-stored numeric fields in the T-SQL queries.
 - Used joins, CTEs, aggregate functions, `CASE`, and window functions.
 - For country-level cumulative metrics, used the latest available non-null record where appropriate.
-- Vaccine doses and people vaccinated are treated as different measures.
+- Treated vaccine doses and people vaccinated as different measures.
 - GDP buckets: Low < 5,000; Lower-middle 5,000 to < 15,000; Upper-middle 15,000 to 35,000; High > 35,000. Missing GDP is labelled `Unknown GDP`.
 
 ## Findings from the supplied extracts
 
-> These are computed from the uploaded Excel data for an initial result check. They are not a claim that the SQL script has already been run in SQL Server. Run the SQL and confirm parity before presenting the findings as SQL query outputs.
+> These findings were computed from the uploaded Excel data for an initial result check. They are not a claim that the SQL script has already been run in SQL Server. Execute the SQL and confirm that its results match before presenting these as verified SQL outputs.
 
 ### 1. India monthly trend
 - Peak month by reported new cases: **April 2021**, with **6,943,304** reported new cases.
 - Peak month by reported new deaths: **April 2021**, with **48,926** reported new deaths.
-- The supplied data ends on 30 April 2021, so April 2021 is a partial historical snapshot only in the sense that the dataset stops at that date, not a complete current trend.
+- The supplied data ends on 30 April 2021; these results describe this historical snapshot, not current COVID-19 trends.
 
 ### 2. Vaccine doses vs. people
 - Israel in the supplied period: approximately **121.3 reported doses per 100 people** and **62.4%** of the population reported as having received at least one dose (latest non-null report: 2021-04-30).
-- Doses per 100 people can exceed 100 because the same person can receive multiple doses. The people-vaccinated metric is the more appropriate measure for the share who received at least one dose.
-- Source reporting can have anomalies. For example, some small locations can report a people-vaccinated count above the population estimate; do not silently interpret that as literal population coverage above 100%.
+- Doses per 100 people can exceed 100 because one person can receive multiple doses. The people-vaccinated metric is more appropriate for estimating the share that received at least one dose.
+- Source reporting can contain anomalies. Some small locations may report people-vaccinated counts above the population estimate; do not automatically interpret those as literal coverage above 100%.
 
 ### 3. GDP-per-capita buckets
 - Highest simple average reported deaths per million in these extracts: **Upper-middle**, about **923.4 deaths per million**.
 - Highest average median age: **High**, about **39.9 years**.
-- These are descriptive comparisons, not evidence that GDP or age bucket caused the death-rate differences. Countries differ in testing, reporting, population structure, and many other factors.
+- These are descriptive comparisons, not evidence that GDP or age bucket caused differences in death rates. Countries differ in testing, reporting, population structure, and other factors.
 
 ### 4. Top 10 deaths per million
-- Highest-ranked country in the population > 1 million filter: **Hungary**, about **2850.8 reported deaths per million** as of its latest available record in the extract.
+- Highest-ranked country in the population > 1 million filter: **Hungary**, about **2,850.8 reported deaths per million** as of its latest available record in the extract.
 - See `data/top10_deaths_per_million.csv` for the full ranked output.
-- The ranking is sensitive to reporting differences and the historical cutoff date.
+- Rankings are sensitive to reporting differences and the historical cutoff date.
 
 ## Excel deliverable
 Open `excel/COVID_Analysis_Results.xlsx`. It contains:
@@ -63,18 +68,19 @@ Open `excel/COVID_Analysis_Results.xlsx`. It contains:
 - `India_USA_Monthly`: monthly cases for India and the United States, suitable for a line chart.
 - `Dashboard_Charts`: Excel charts using the calculated output tables.
 
-## Suggested Tableau Public dashboard
-1. **India monthly trend:** line chart of monthly new cases and new deaths; optionally use separate charts or dual axes because the scales differ.
-2. **Doses vs people:** compare doses per 100 people and people vaccinated % for selected countries. Label both measures clearly.
-3. **Top 10 deaths per million:** ranked horizontal bar chart with the population > 1 million filter applied.
+## Tableau Public dashboard
+The published dashboard includes:
+1. **India monthly COVID-19 cases:** line chart of reported monthly cases.
+2. **Top countries by COVID-19 deaths per million:** ranked horizontal bar chart.
+3. **COVID-19 vaccination coverage by country:** horizontal bar chart.
 
-Add a dashboard title, data source, date cutoff (30 April 2021), and filters for continent/country where useful. Do not label this as current COVID data.
+The dashboard is based on historical data through 30 April 2021. The India monthly chart should be interpreted with the supplied data's date range and aggregation in mind. Verify the underlying monthly values against the SQL output before treating them as final.
 
 ## Five interview questions to prepare
-1. **Why filter `continent IS NOT NULL`?** It removes aggregate rows such as World and regions from country-level comparisons, avoiding double counting.
-2. **Why can doses per 100 people exceed 100?** Doses count administrations; one person may receive multiple doses.
-3. **Why use `NULLIF(population, 0)`?** It prevents division-by-zero errors by returning NULL when the denominator is zero.
-4. **Why use `RANK()` for the top 10?** It preserves ties; rank 10 ties can cause more than ten rows to appear.
+1. **Why filter `continent IS NOT NULL`?** It removes aggregate rows such as World and regions from country-level comparisons, helping avoid double counting.
+2. **Why can doses per 100 people exceed 100?** Doses count administrations; one person can receive multiple doses.
+3. **Why use `NULLIF(population, 0)`?** It prevents division-by-zero errors by returning `NULL` when the denominator is zero.
+4. **Why use `RANK()` for the top 10?** It preserves ties; a rank-10 tie can result in more than ten rows.
 5. **Does a higher average death rate in a GDP bucket prove GDP causes deaths?** No. This is descriptive, ecological analysis and cannot establish causation.
 
 ## Limitations
@@ -86,4 +92,6 @@ Add a dashboard title, data source, date cutoff (30 April 2021), and filters for
 - GDP per capita and median age are country-level indicators; correlation does not establish causation.
 - `RANK()` can return more than ten rows when ranks tie.
 - The SQL script must be executed in SQL Server and compared with the included result files before claiming reproducibility.
-- 
+
+## Credit
+Initial exploration based on Alex Freberg's tutorial; extended with own analysis.
